@@ -6,13 +6,7 @@ A simple UNIX command interpreter implemented in C.
 - [Description](#description)
 - [Features](#features)
 - [Requirements](#requirements)
-- [Getting Started](#getting-started)
-- [Usage](#usage)
-- [Compilation](#compilation)
-- [Testing](#testing)
-- [Contributing](#contributing)
-- [Authors](#authors)
-- [License](#license)
+- [Author](#author)
 
 ## Description
 
