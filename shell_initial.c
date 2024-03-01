@@ -1,33 +1,36 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include <unistd.h>
+#include <sys/wait.h>
 
+int main() {
+	char *line = NULL;
+	size_t len = 0;
+	ssize_t read;
 
-#ifndef _SIZE_T_DEFINED
-#define _SIZE_T_DEFINED
-typedef __typeof(sizeof(int)) size_t;
-#endif
+	while (1) {
+		printf("$ ");
+		read = getline(&line, &len, stdin);
+		if (read == -1) {
+		       printf("\n");
+		       break;
+		}
+		
+		line[read - 1] = '\0';
 
-int main(void)
-{
-    char *buffer = NULL;
-    size_t bufsize = 0;
+		pid_t pid = fork();
+		if (pid == 0) {
+			if (execlp(line, line, NULL) == -1) {
+				perror("Error executing command");
+			}
+			exit(EXIT_FAILURE);
+		} else if (pid < 0) {
 
-    while (1) {
-        printf("#cisfun$ ");
-
-        if (getline(&buffer, &bufsize, stdin) == -1) {
-            perror("Unable to read command");
-            free(buffer);
-            exit(EXIT_FAILURE);
-        }
-
-        buffer[strcspn(buffer, "\n")] = 0;
-
-        system(buffer);
-    }
-
-    free(buffer);
-    return 0;
+			perror("Error forking");
+		} else {
+			wait(NULL);
+		}
+	}
+	free(line);
+	return 0;
 }
-
